@@ -2,23 +2,40 @@ import logging
 from datetime import datetime
 from config.config import LOG_DIR
 
-
-def logger_configuration():
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+def setup_logging():
+    """
+    Configure root logger once at startup.
+    """
+    
+    formatter = logging.Formatter(
+        '%(asctime)s | %(levelname)-8s | %(name)s | %(funcName)s:%(lineno)d | %(message)s'
+    )
 
     datetime_now = datetime.now().strftime("%Y_%m_%d_%H%M%S")
     log_file_name = f"{LOG_DIR}/{datetime_now}.log"
-    filehandler = logging.FileHandler(log_file_name)
-    filehandler.setLevel(logging.DEBUG)
-    filehandler.setFormatter(formatter)
 
-    if not logger.hasHandlers():
-        logger.addHandler(filehandler)
+    file_handler = logging.FileHandler(log_file_name)
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
 
-    return logger
+    # console_handler = logging.StreamHandler()
+    # console_handler.setLevel(logging.INFO)
+    # console_handler.setFormatter(formatter)
 
+    # attach to ROOT logger — every child logger inherits this
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
 
+    if not root_logger.hasHandlers():
+        root_logger.addHandler(file_handler)
+        #root_logger.addHandler(console_handler)
 
-applogger=logger_configuration()
+    # docling
+    docling_logger = logging.getLogger("docling")
+    docling_logger.setLevel(logging.INFO)
+    docling_logger.propagate = False
+    docling_logger.addHandler(file_handler)
+
+    rapidocr_logger = logging.getLogger("RapidOCR")
+    rapidocr_logger.setLevel(logging.INFO)
+    rapidocr_logger.addHandler(file_handler)

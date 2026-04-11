@@ -16,6 +16,9 @@ already contain the information needed to diagnose the problem:
 """
 import sys
 import traceback
+import logging
+
+applogger = logging.getLogger(__name__)
 
 class ApplicationException(Exception):
 
@@ -48,15 +51,8 @@ class ModelException(ApplicationException):
     pass
 
 
-
 class EmbeddingException(ApplicationException):
     pass
-
-
-
-class ChunkingException(ApplicationException):
-    pass
-
 
 
 class EvaluationException(ApplicationException):
@@ -79,6 +75,8 @@ class InvalidDocumentException(ApplicationException):
     pass
 
 
+class DatabaseException(ApplicationException):
+    pass
 
 
 

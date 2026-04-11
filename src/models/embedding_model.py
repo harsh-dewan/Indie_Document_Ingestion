@@ -3,13 +3,14 @@ Description: Setting up Embedding Model
 Author: Harsh
 Version: 0.1.0
 """
-from utils.logging import applogger
-from utils.exceptions import EmbeddingException, ApplicationException
-from config.config import GEMINI_API_KEY, EMBEDDING_DIMENSIONS, EMBEDDING_MODEL
+from utils.exceptions import EmbeddingException
+from config.config import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL, STRATEGY_CONFIG, STRATEGY_NAME
 import sys
 from google import genai
 from google.genai import types
 
+import logging
+applogger = logging.getLogger(__name__)
 
 
 class EmbeddingModel():
@@ -37,13 +38,13 @@ class EmbeddingModel():
                                 )
         except Exception as exception:
             applogger.error(f"Exception occured while getting embedding client {str(exception)}")
-            raise ApplicationException(str(exception), sys, 
+            raise EmbeddingException(str(exception), sys, 
                                     {"Status":"App Failure -- No Embedding Client object created, Error!!", 
                                     "Type":type(exception).__name__}
                                 )
 
 
-    def get_embeddings(self, query: str) -> list[float]:
+    def get_embeddings(self, input_texts: list[str]) -> list[float]:
         """
         Description: This function is used to get the embedding of the content passed
         Input: Content for which embeddings need to be generated
@@ -54,10 +55,12 @@ class EmbeddingModel():
             embedding_client = self.get_model_client()
             embeddings = embedding_client.models.embed_content(
                 model=EMBEDDING_MODEL,
-                contents=query,
+                contents=input_texts,
                 config=types.EmbedContentConfig(output_dimensionality=EMBEDDING_DIMENSIONS)
             )
+            applogger.info(f"type of embedding: {type(embeddings)}")
             applogger.info(f"Embedding Generation Success {embeddings}")
+            
             return embeddings
         except EmbeddingException as exception:
             applogger.error("Exception while generating embeddings")
@@ -67,7 +70,7 @@ class EmbeddingModel():
                                 )
         except Exception as exception:
             applogger.error(f"Exception occured while generating embeddings {str(exception)}")
-            raise ApplicationException(str(exception), sys, 
+            raise EmbeddingException(str(exception), sys, 
                                     {"Status":"App Failure -- No Embedding generated, Error!!", 
                                     "Type":type(exception).__name__}
                                 )

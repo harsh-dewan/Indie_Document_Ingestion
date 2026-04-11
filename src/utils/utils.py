@@ -1,7 +1,9 @@
-from utils.logging import applogger
 from utils.exceptions import ApplicationException, EvaluationException, InvalidDocumentException
 from config.config import PDF, MARKDOWN, DOCX, TEXT, MAX_FILE_SIZE
 from pathlib import Path
+import logging
+
+applogger = logging.getLogger(__name__)
 
 def check_file_validity(file_path: str) -> bool:
     """

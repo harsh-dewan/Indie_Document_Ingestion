@@ -3,11 +3,13 @@ Description: Setting up Large Language Model
 Author: Harsh
 Version: 0.1.0
 """
-from utils.logging import applogger
-from utils.exceptions import ModelException, ApplicationException
+from utils.exceptions import ModelException
 from config.config import GEMINI_API_KEY, LLM_MODEL_NAME
 import sys
 from google import genai
+import logging
+
+applogger = logging.getLogger(__name__)
 
 
 class Model():
@@ -35,8 +37,8 @@ class Model():
                                 "Message":"LLM Model cannot be instantiated"}
                                 )
         except Exception as exception:
-            applogger.error("   ModelClass: ApplicationException")
-            raise ApplicationException(str(exception), sys, 
+            applogger.error("   ModelClass: ModelException")
+            raise ModelException(str(exception), sys, 
                                     {"Status":"App Failure, LLM Client not instantiated", 
                                     "Type":type(exception).__name__}
                                 )
@@ -66,8 +68,8 @@ class Model():
                                 "Message":"Unable to obtain llm response"}
                                 )
         except Exception as exception:
-            applogger.error("   ModelClass: ApplicationException")
-            raise ApplicationException(str(exception), sys, 
+            applogger.error("   ModelClass: ModelException")
+            raise ModelException(str(exception), sys, 
                                     {"Status":"App Failure -- No reply from LLM", 
                                     "Type":type(exception).__name__}
                                 )
