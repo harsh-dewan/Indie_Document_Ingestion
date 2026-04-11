@@ -8,6 +8,9 @@ from utils.exceptions import ModelException, ApplicationException
 import sys
 
 
+def sample_llm_call():
+    pass
+
 
 def get_model():
     applogger.info("Inside Model Class")

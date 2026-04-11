@@ -59,7 +59,7 @@ class ChunkingException(ApplicationException):
 
 
 
-class EvalException(ApplicationException):
+class EvaluationException(ApplicationException):
     pass
 
 
