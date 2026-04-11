@@ -54,7 +54,7 @@ def take_document(file_name: str) -> bool:
     Input:  takes filename
     Output: pass it to the ingestion pipeline for parsing, chunking and embedding
     """
-    applogger.info("Inside take_documents")
+    applogger.info(f"Inside take_documents, recieved filename: {file_name}")
     try:
         is_file_valid = check_file_validity(file_name)
         if not is_file_valid:
