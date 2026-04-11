@@ -22,5 +22,9 @@ PG_PASSWORD=os.getenv("PG_PASSWORD")
 LOG_DIR = os.getenv("LOG_DIR", "logs")
 
 
-
+PDF=".pdf"
+MARKDOWN=".md"
+DOCX=".docx" 
+TEXT=".txt"
+MAX_FILE_SIZE="1_000_000"
 

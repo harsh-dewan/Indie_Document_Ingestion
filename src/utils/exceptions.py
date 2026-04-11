@@ -75,7 +75,8 @@ class RetrievalException(ApplicationException):
     pass
 
 
-
+class InvalidDocumentException(ApplicationException):
+    pass
 
 
 
