@@ -2,18 +2,21 @@ from utils.logging import applogger
 from utils.exceptions import ApplicationException
 from embedding.vembedding import vembedding
 from chunking.hybrid_chunker import chunker
-from models.llm_model import get_model
+from models.llm_model import model
+from models.embedding_model import embedding_model
 
 def main():
     applogger.info("This logger is working from main")
     vembedding()
     chunker()
-    get_model()
+    llm_response = model.get_llm_response("Give me 10 unique words")
+    applogger.info(f"LLM Response: {llm_response}")
+    embedding_model.get_embeddings("Hello")
     return
 
 if __name__ == "__main__":
     try:
         main()
     except ApplicationException as exception:
-        applogger.critical("Main--Exception Occured, Please Check")
+        applogger.critical("Application Failure - Please Check")
         applogger.critical(exception)

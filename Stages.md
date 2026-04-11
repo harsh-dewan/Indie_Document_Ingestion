@@ -56,3 +56,13 @@ Enhancements:
 ```
 
 
+```
+Plan:
+
+Basic RAG
+    Model Class Ready
+    Docling Setup, Chunking 
+    VectorDB Setup, Embeddings
+    Prompts
+    Query and Retreival
+```
