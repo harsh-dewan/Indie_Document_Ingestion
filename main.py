@@ -1,5 +1,5 @@
 from utils.logging import setup_logging
-from utils.exceptions import ApplicationException, ModelException, IngestionException, InvalidDocumentException, EmbeddingException
+from utils.exceptions import ApplicationException, ModelException, IngestionException, InvalidDocumentException, EmbeddingException, RetrievalException
 from models.llm_model import model
 from models.embedding_model import embedding_model
 from utils.utils import take_document
@@ -65,6 +65,9 @@ def main():
     except IngestionException as exception:
         applogger.error("Application Failure - Ingestion Phase Failed")
         raise ApplicationException(str(exception), context={"status":"FAILURE", "ErrorMessage":"Failed to Ingest Document"})
+    except RetrievalException as exception:
+        applogger.error("Application Failure - Retrieval Phase Failed")
+        raise ApplicationException(str(exception), context={"status":"FAILURE", "ErrorMessage":"Failed in Retrieval Document Phase"})
     except Exception as exception:
         applogger.error("Application Failure - Something unexpected happend")
         raise ApplicationException(str(exception), context={"status":"FAILURE", "ErrorMessage":"Project Failure"})
