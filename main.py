@@ -22,27 +22,36 @@ def main():
         #Model
         print("\nGetting LLM Model and Embedding Model ready for you")
         applogger.info("Testing with input - ")
-        llm_response = model.get_llm_response("Give me 5 unique english words")
+        llm_response = model.get_llm_response("Give me a unique english word, rarely used")
         applogger.info(f"LLM Response Success: {llm_response}")
         embedding_model.get_embeddings("Hello")
 
         #Input Document
-        user_input = input("Please enter the path of the file you wantme to ingest: ")
+        user_input = input("Please enter the path of the file you want me to ingest: ")
         safe_user_input = user_input.strip()
         take_document(safe_user_input)
         applogger.info("File path is correct and workable")
 
         #Ingestion Pipeline
         applogger.info("Heading to Ingestion Pipeline")
-        ingestion(safe_user_input)
+        (doc_id, strategy_name) = ingestion(safe_user_input)
         applogger.info("Ingestion Phase Successfully passed, Heading to Retrieval Phase")
 
         #Retrieval Phase
         applogger.info("Asking user to input his query")
-        user_input = input("Hi, Any Question? Please:  ")
-        safe_user_input = user_input.strip()
-        retrieval(safe_user_input)
-        applogger.info("Retrieval Phase done, Exiting for now, bye")
+        print("\n\nModel: I am ready to answer your questions, Please tell me")
+        while True:
+            user_input = input("\n\nUser: ").strip()
+            if not user_input:
+                applogger.error("Empty query provided.")
+                continue
+            if user_input.lower() in ("exit", "bye"):
+                applogger.info("Bye for now!!")
+                break
+            llm_response = retrieval(user_input, doc_id=doc_id, strategy_name=strategy_name, top_k=5)
+            print("\n\nModel: ", llm_response)
+        print("\n\nModel: Thank you for your time, It was my pleasure serving you. Bye for now")
+        applogger.info("Thank you, Exiting for now, bye")
             
     except InvalidDocumentException as exception:
         applogger.error("Application Failure - Invalid Document")

@@ -29,3 +29,17 @@ INSERT_EMBEDDINGS_IN_BATCH = """
         metadata
     ) VALUES %s
 """
+
+SEARCH_VECTOR_EMBEDDINGS="""
+                SELECT
+                    c.chunk_index,
+                    c.content,
+                    1 - (c.embedding <=> %s::vector) AS similarity
+                FROM chunks c
+                JOIN chunking_strategies cs ON cs.id = c.strategy_id
+                JOIN documents d ON d.id = c.document_id
+                WHERE d.id = %s
+                  AND cs.name = %s
+                ORDER BY c.embedding <=> %s::vector
+                LIMIT %s
+            """

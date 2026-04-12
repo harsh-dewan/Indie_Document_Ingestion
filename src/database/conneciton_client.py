@@ -4,7 +4,7 @@
 from utils.exceptions import DatabaseException
 from pgvector.psycopg2 import register_vector
 from config.config import DB_NAME, DB_PASSWORD, DB_HOST, DB_USER, DB_PORT
-from database.queries import INSERT_DOCUMENT_RECORD, CREATE_STRATEGY_RECORD, SELECT_STRATEGY_ID, INSERT_EMBEDDINGS_IN_BATCH
+from database.queries import SEARCH_VECTOR_EMBEDDINGS, INSERT_DOCUMENT_RECORD, CREATE_STRATEGY_RECORD, SELECT_STRATEGY_ID, INSERT_EMBEDDINGS_IN_BATCH
 import psycopg2
 from psycopg2.extras import execute_values
 import json, uuid
@@ -147,3 +147,39 @@ def store_embeddings_in_db_batch(embeddings: dict, doc_id: int, strategy_id: int
     except Exception as exception:
         applogger.error("Unexpected error while storing embeddings into db")
         raise DatabaseException(str(exception), context={"status:":"Failed","Error Message:":type(exception).__name__})
+
+
+def get_contextual_embeddings(doc_id: str, embeddings: list[float], strategy_name: str, top_k: int = 5) -> list[str]:
+    """
+    Description: This function is used to simantically search for related embeddings using cosine similarity
+    Input: embeddings
+    Output: actual content from the documents related to the user query
+    """
+    try:
+        applogger.info("get_contextual_embeddings")
+        if embeddings is None or len(embeddings) == 0:
+            raise DatabaseException("input embeddings are empty")
+        connection = get_connection()
+        with connection as conn:
+            with conn.cursor() as cur:
+                cur.execute(SEARCH_VECTOR_EMBEDDINGS,(embeddings, doc_id, strategy_name, embeddings, top_k))
+                rows = cur.fetchall()
+        contents = []
+        for chunk_index, content, similarity in rows:
+            applogger.info(
+                "chunk_index=%d similarity=%.4f preview=%.80s",
+                chunk_index, similarity, content
+            )
+            if similarity >= 0.50:
+                contents.append(content)
+
+        applogger.info(f"Search returned {len(contents)} results.")
+        applogger.info("Actual Content successfully retrieved from DB")
+        return contents
+    except DatabaseException as exception:
+        applogger.error("Exception while searching for similar documents in retrieval phase")
+        raise
+    except Exception as exception:
+        applogger.error("Unexpected error while retrieving context from database")
+        raise DatabaseException(str(exception), context={"status:":"Failed", "Error Message:":type(exception).__name__})
+    

@@ -165,7 +165,7 @@ def store_embeddings(embedding: dict, file_name:str, total_chunks: int, metadata
         store_embeddings_in_db_batch(embedding, doc_id, strategy_id)
         applogger.info("All Embeddings addedd successfully")
         applogger.info(f"=== Ingest pipeline complete — {doc_id} ===")
-        return doc_id, strategy_id
+        return doc_id, STRATEGY_NAME
     
     except IngestionException:
         applogger.error("Ingestion Exception: Error while storing the embeddings")
@@ -223,8 +223,8 @@ def ingestion(file_name):
         applogger.error("Ingestion Pipeline failed!!, please check logs")
         raise
     except DatabaseException as exception:
-        applogger.error("Ingestion Exception: Error from database connection and storing embeddings")
+        applogger.error("Ingestion Phase Database Exception: Error from database connection and storing embeddings")
         raise
     except EmbeddingException as exception:
-        applogger.error("Embedding Exception -- Error while generating embeddings")
+        applogger.error("Ingestion Phase Embedding Exception -- Error while generating embeddings")
         raise 
