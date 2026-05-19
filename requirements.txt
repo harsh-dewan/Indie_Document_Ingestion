@@ -23,6 +23,7 @@ docling-core==2.73.0
 docling-ibm-models==3.13.0
 docling-parse==5.8.0
 et-xmlfile==2.0.0
+fastapi==0.115.12
 faker==40.13.0
 filelock==3.25.2
 filetype==1.2.0
@@ -46,7 +47,6 @@ httplib2==0.31.2
 httpx==0.28.1
 huggingface-hub==1.10.1
 idna==3.11
--e file:///D:/Harsh/AI_Projects/GenAI/Indie_Document_Ingestion
 jinja2==3.1.6
 jsonlines==4.0.0
 jsonref==1.1.0
@@ -93,8 +93,10 @@ pypdfium2==5.7.0
 python-dateutil==2.9.0.post0
 python-docx==1.2.0
 python-dotenv==1.2.2
+python-multipart==0.0.20
+uvicorn==0.34.3
 python-pptx==1.0.2
-pywin32==311
+pywin32==311; sys_platform == "win32"
 pyyaml==6.0.3
 rapidocr==3.8.0
 referencing==0.37.0
